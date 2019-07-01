@@ -103,7 +103,7 @@ create table poupanca_lancamentos(
 	dt_lancamento_poupanca date not null,
 	valor_lancamento_poupanca decimal(10,2) not null,
 	foreign key (id_conta) references cliente(id_conta)
-); /*               LANÇAMENTO PODE SER NEGATIVO PORÉM NÃO "MAIOR" PARA NEGATIVAR A POUPANCA TOTAL      */
+); /*               LANÃ‡AMENTO PODE SER NEGATIVO PORÃ‰M NÃƒO "MAIOR" PARA NEGATIVAR A POUPANCA TOTAL      */
 
 
 /* -- poupanca_total: -- */
@@ -237,7 +237,7 @@ insert into tipo_cliente values (2,'JURIDICA');
 		insert into conta_corrente_lancamentos values (11,2,'2014-12-21',-300);
         
         
-        /* INSERIR VALORES NA POUPANÇA */
+        /* INSERIR VALORES NA POUPANÃ‡A */
 		insert into poupanca_lancamentos values (1,2,sysdate(),20);
 		insert into poupanca_lancamentos values (2,2,sysdate(),50);
 		insert into poupanca_lancamentos values (3,2,sysdate(),80);
@@ -274,7 +274,7 @@ begin
 	
 	if(pvalor_total_poupanca < 0) then
 
-		SIGNAL SQLSTATE 'ERROR' SET MESSAGE_TEXT = 'Valor da poupança total não pode ser menor que 0';
+		SIGNAL SQLSTATE 'ERROR' SET MESSAGE_TEXT = 'Valor da poupanÃ§a total nÃ£o pode ser menor que 0';
 
 	end if;
 
@@ -315,7 +315,7 @@ delimiter ;
 /* -------------------------------------------------------------------------------------------- */
 
 
-/*gera valor total - poupança e conta corrente */
+/*gera valor total - poupanÃ§a e conta corrente */
 drop trigger trg_gera_total_poupanca;
 delimiter \\
 create trigger trg_gera_total_poupanca
@@ -399,16 +399,16 @@ delimiter ;
 
 
 /*--PROXIMOS PASSOS: 
-1: Taxa administrativa, o banco cobra um valor mensal por serviços administrativos. Este valor é
-fixo em R$16,00 por mês. Este pacote de serviços te da direito a 3 transferências e 2 extratos
-por mês. Cada transferência extra custa R$5,00 e cada extrato R$1,00.
+1: Taxa administrativa, o banco cobra um valor mensal por serviÃ§os administrativos. Este valor Ã©
+fixo em R$16,00 por mÃªs. Este pacote de serviÃ§os te da direito a 3 transferÃªncias e 2 extratos
+por mÃªs. Cada transferÃªncia extra custa R$5,00 e cada extrato R$1,00.
 */
 
 
 
 
-/* ----  Transferência: Procedure para transferir dinheiro de uma conta corrente para outra
-conta corrente. E Procedure para transferir da CC para Poupança ou Poupança para CC;
+/* ----  TransferÃªncia: Procedure para transferir dinheiro de uma conta corrente para outra
+conta corrente. E Procedure para transferir da CC para PoupanÃ§a ou PoupanÃ§a para CC;
 */
 drop procedure pro_transfere_conta_corrente;
 delimiter \\
@@ -483,8 +483,8 @@ delimiter ;
 
 
 
-/* Relatório: Procedure que retorne uma projeção do saldo da Poupança e da CC, 
-nos próximos 30, 60, 90 e 360 dias, assuma que não será feita nenhuma operação neste período */
+/* RelatÃ³rio: Procedure que retorne uma projeÃ§Ã£o do saldo da PoupanÃ§a e da CC, 
+nos prÃ³ximos 30, 60, 90 e 360 dias, assuma que nÃ£o serÃ¡ feita nenhuma operaÃ§Ã£o neste perÃ­odo */
 drop procedure relatorio;
 delimiter \\
 create procedure relatorio (in pid_conta int,out projecao varchar(300))
@@ -492,8 +492,8 @@ create procedure relatorio (in pid_conta int,out projecao varchar(300))
 begin
 		
         
-        /*     1. TAXA ADMINISTRATIVA 16 REAIS -- POR MÊS     
-			   2. 0,6%  POR AUMENTO MENSAL NA POUPANÇA
+        /*     1. TAXA ADMINISTRATIVA 16 REAIS -- POR MÃŠS     
+			   2. 0,6%  POR AUMENTO MENSAL NA POUPANÃ‡A
         */
         
         declare vtotal_corrente decimal(10,2);
@@ -534,14 +534,14 @@ begin
          
         
 		 set projecao = concat(
-                'Projeção CC-30 dias: ' , proj_30_conta_corrente ,'   ','\n',
-				'Projeção CC-60 dias: ' , proj_60_conta_corrente , '   ','\n',
-				'Projeção CC-90 dias: ' , proj_90_conta_corrente , '   ','\n',
-				'Projeção CC-360 dias: ' , proj_360_conta_corrente ,'   ', '\n',
-                'Projeção Poupança-30 dias: ' , proj_30_poupanca ,'   ','\n',
-				'Projeção Poupança-60 dias: ' , proj_60_poupanca , '   ','\n',
-				'Projeção Poupança-90 dias: ' , proj_90_poupanca , '   ','\n',
-				'Projeção Poupança-360 dias: ' , proj_360_poupanca ,'   ', '\n' 
+                'ProjeÃ§Ã£o CC-30 dias: ' , proj_30_conta_corrente ,'   ','\n',
+				'ProjeÃ§Ã£o CC-60 dias: ' , proj_60_conta_corrente , '   ','\n',
+				'ProjeÃ§Ã£o CC-90 dias: ' , proj_90_conta_corrente , '   ','\n',
+				'ProjeÃ§Ã£o CC-360 dias: ' , proj_360_conta_corrente ,'   ', '\n',
+                'ProjeÃ§Ã£o PoupanÃ§a-30 dias: ' , proj_30_poupanca ,'   ','\n',
+				'ProjeÃ§Ã£o PoupanÃ§a-60 dias: ' , proj_60_poupanca , '   ','\n',
+				'ProjeÃ§Ã£o PoupanÃ§a-90 dias: ' , proj_90_poupanca , '   ','\n',
+				'ProjeÃ§Ã£o PoupanÃ§a-360 dias: ' , proj_360_poupanca ,'   ', '\n' 
 				);
 
 	
@@ -553,7 +553,7 @@ delimiter ;
 	call relatorio (1,@projecao);
     select @projecao;
 
-/* --  Extrato: View para facilitar a visualização das operações realizadas poupança e da CC, 
+/* --  Extrato: View para facilitar a visualizaÃ§Ã£o das operaÃ§Ãµes realizadas poupanÃ§a e da CC, 
 agrupandopor cliente e ordenando por data.
 EXEMPLO: CREATE VIEW view_name ASSELECT column_name(s)FROM table_nameWHERE condition  */
 drop view visualizacao_lancamentos;
@@ -575,8 +575,8 @@ create view visualizacao_lancamentos AS
 /* --------------------------------------------------------------------------------------------  */
 
 
-/*  Procedure para gerar um arquivo com o extrato do mês 
-o saldo atual e sua projeção  */
+/*  Procedure para gerar um arquivo com o extrato do mÃªs 
+o saldo atual e sua projeÃ§Ã£o  */
 drop procedure extracao;
 
 delimiter \\
@@ -618,17 +618,17 @@ update extrato set quantidade_extrato = 0 where id_conta = 2;
 		
 
 /* --------------------------------------------------------------------------------------------  */
-/* Atualização de saldo: Procedure executada diariamente para atualizar os saldos da
-poupança e conta corrente de acordo com os juros do dia; Importante, as operações em
-todas as contas devem ser feitas de forma atômica, ou seja, se o processo falhar por
+/* AtualizaÃ§Ã£o de saldo: Procedure executada diariamente para atualizar os saldos da
+poupanÃ§a e conta corrente de acordo com os juros do dia; Importante, as operaÃ§Ãµes em
+todas as contas devem ser feitas de forma atÃ´mica, ou seja, se o processo falhar por
 algum motivo nenhuma conta deve ser atualizada; (utilize session)   */
 
 /*       TENTAR UTILIZAR CURSOR E LOOP           */
 
 /*OQUE FALTA ->
---SOMENTE 2 EXTRATO PODERAM SER GERADOS POR MÊS SE FIZER MAIS AUMENTA 1 REAL NA CONTA CORRENTE.
+--SOMENTE 2 EXTRATO PODERAM SER GERADOS POR MÃŠS SE FIZER MAIS AUMENTA 1 REAL NA CONTA CORRENTE.
 
---dividir o juros mensal da poupança por 30;
+--dividir o juros mensal da poupanÃ§a por 30;
 --se saldo negativo da conta corrente injeta juros
 */
 
@@ -679,7 +679,7 @@ begin
 	declare vid int;
 	declare saldo decimal (10,5);
 
-	/* JUROS CONTA POUPANÇA */
+	/* JUROS CONTA POUPANÃ‡A */
 
 	declare juros_diario_poupanca cursor for
 
@@ -749,7 +749,7 @@ select * from conta_corrente_lancamentos;
 select * from conta_corrente_total;
 
 
-/*  procedure rodada acada 1 mês para zerar o número de transações na tabela de transferencia e extrato  */
+/*  procedure rodada acada 1 mÃªs para zerar o nÃºmero de transaÃ§Ãµes na tabela de transferencia e extrato  */
 drop procedure prc_zera_transferencia_extrato;
 
 delimiter \\
